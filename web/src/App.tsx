@@ -2,11 +2,12 @@ import AMapLoader from "@amap/amap-jsapi-loader";
 import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import { fetchJSON } from "./main";
-import { assert } from "./util";
+import { assert } from "./util/assert";
+import mapTools, { LngLatObj } from "./util/mapTools";
 
 type TAMap = typeof AMap;
 
-type LngLat = [number, number];
+type LngLat = [lng: number, lat: number];
 
 window._AMapSecurityConfig = {
   securityJsCode: "1e352fde6c61dba536474a88c7993c80",
@@ -58,21 +59,26 @@ function App() {
       "/api/proxylark/https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/shtcnSrIMt5ZL0YEoLP7ea27zqf/values/db8dfc"
     ).then((res) => {
       console.log(res.data.valueRange.values);
-      const p = res.data.valueRange.values
+      const p: LngLatObj[] = res.data.valueRange.values
         .slice(1)
         .slice(-30)
-        .map((v: number[]) => [v[1], v[0]]);
+        .map(
+          (v: number[]) =>
+            ({
+              lat: v[0],
+              lng: v[1],
+            } as LngLatObj)
+        );
 
-      AMap.convertFrom(p, "gps", (s, r) => {
-        if (typeof r !== "string") {
-          setPath(r.locations.map((l) => [l.getLng(), l.getLat()]));
-        }
-      });
+      setPath(
+        p
+          .map((point) => mapTools.transformWGS2GCJ(point))
+          .map((point) => [point.lng, point.lat])
+      );
     });
   }
 
   useEffect(() => {
-    console.log(path, map);
     if (!path.length || !map.current) return;
     map.current.clearMap();
     const polyline = new AMap.Polyline({
