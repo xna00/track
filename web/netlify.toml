@@ -1,0 +1,5 @@
+[dev]
+autoLaunch = false
+[[edge_functions]]
+path = "/api/hello"
+function = "hello"
