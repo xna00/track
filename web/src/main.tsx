@@ -8,7 +8,7 @@ if (navigator.serviceWorker) {
   navigator.serviceWorker.register("/sw.js");
 }
 
-const fetchJSON = async (
+export const fetchJSON = async (
   input: RequestInfo | URL,
   init?: Omit<RequestInit, "body"> & { body?: any }
 ) => {
@@ -50,13 +50,11 @@ window.pushLocations = async function (locations) {
   );
 };
 
-fetchJSON(
-  "/api/proxylark/https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/shtcnSrIMt5ZL0YEoLP7ea27zqf/values/db8dfc"
-);
+// fetchJSON(
+//   "/api/proxylark/https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/shtcnSrIMt5ZL0YEoLP7ea27zqf/values/db8dfc"
+// );
 
 // window.pushLocations("[[1,2,3,4,5]]");
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  <App />
 );
