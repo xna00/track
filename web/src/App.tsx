@@ -8,12 +8,9 @@ type TAMap = typeof AMap;
 
 type LngLat = [number, number];
 
-const path: LngLat[] = [
-  [121.49629, 31.16734],
-  [121.50207, 31.16657],
-  [121.50208, 31.16735],
-  [121.48696, 31.16981],
-];
+window._AMapSecurityConfig = {
+  securityJsCode: "1e352fde6c61dba536474a88c7993c80",
+};
 
 function App() {
   const wrapper = useRef<HTMLDivElement>(null);
@@ -27,6 +24,7 @@ function App() {
       plugins: ["AMap.Geolocation"], // 需要使用的的插件列表，如比例尺'AMap.Scale'等
     })
       .then((AMap: TAMap) => {
+        console.log(AMap);
         assert(wrapper.current);
         const _map = new AMap.Map(wrapper.current, {
           zoom: 14,
@@ -48,9 +46,6 @@ function App() {
             zoomToAccuracy: true, //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
           });
           _map.addControl(geolocation);
-          // geolocation.getCurrentPosition((...args) => {
-          //   console.log(args);
-          // });
         });
       })
       .catch((e) => {
@@ -67,7 +62,12 @@ function App() {
         .slice(1)
         .slice(-30)
         .map((v: number[]) => [v[1], v[0]]);
-      setPath(p);
+
+      AMap.convertFrom(p, "gps", (s, r) => {
+        if (typeof r !== "string") {
+          setPath(r.locations.map((l) => [l.getLng(), l.getLat()]));
+        }
+      });
     });
   }
 
