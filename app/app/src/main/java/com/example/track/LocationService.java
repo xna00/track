@@ -105,12 +105,12 @@ public class LocationService extends Service {
                 String info = String.format("{\n" +
                                 "\"latitude\": %f,\n" +
                                 "\"longitude\": %f,\n" +
-                                "\"altitude\": %f\n" +
-                                "\"accuracy\": %f\n" +
-                                "\"verticalAccuracy\": %f\n" +
-                                "\"speed\": %f\n" +
-                                "\"speedAccuracy\": %f\n" +
-                                "\"time\": %s\n" +
+                                "\"altitude\": %f,\n" +
+                                "\"accuracy\": %f,\n" +
+                                "\"verticalAccuracy\": %f,\n" +
+                                "\"speed\": %f,\n" +
+                                "\"speedAccuracy\": %f,\n" +
+                                "\"time\": \"%s\"\n" +
                                 "}",
                         location.getLatitude(),
                         location.getLongitude(),
