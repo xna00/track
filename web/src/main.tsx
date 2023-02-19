@@ -23,19 +23,31 @@ const fetchJSON = async (
   return await res.json();
 };
 window.pushLocations = async function (locations) {
+  const cols = [
+    "latitude",
+    "longitude",
+    "altitude",
+    "speed",
+    "accuracy",
+    "verticalAccuracy",
+    "speedAccuracy",
+    "time",
+  ];
   console.log(locations);
-  // fetchJSON(
-  //   "/api/proxylark/https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/shtcnSrIMt5ZL0YEoLP7ea27zqf/values_append?insertDataOption=INSERT_ROWS",
-  //   {
-  //     method: "post",
-  //     body: {
-  //       valueRange: {
-  //         range: "db8dfc",
-  //         values: JSON.parse(locations),
-  //       },
-  //     },
-  //   }
-  // );
+  fetchJSON(
+    "/api/proxylark/https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/shtcnSrIMt5ZL0YEoLP7ea27zqf/values_append?insertDataOption=INSERT_ROWS",
+    {
+      method: "post",
+      body: {
+        valueRange: {
+          range: "db8dfc",
+          values: (
+            JSON.parse(locations) as Record<typeof cols[number], unknown>[]
+          ).map((row) => [cols.map((col) => row[col])]),
+        },
+      },
+    }
+  );
 };
 
 fetchJSON(
