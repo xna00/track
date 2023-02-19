@@ -43,7 +43,7 @@ window.pushLocations = async function (locations) {
           range: "db8dfc",
           values: (
             JSON.parse(locations) as Record<typeof cols[number], unknown>[]
-          ).map((row) => [cols.map((col) => row[col])]),
+          ).map((row) => cols.map((col) => row[col])),
         },
       },
     }
