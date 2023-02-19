@@ -74,6 +74,7 @@ function App() {
   useEffect(() => {
     console.log(path, map);
     if (!path.length || !map.current) return;
+    map.current.clearMap();
     const polyline = new AMap.Polyline({
       path: path,
       isOutline: true,
@@ -81,7 +82,7 @@ function App() {
       borderWeight: 1,
       strokeColor: "#3366FF",
       strokeOpacity: 1,
-      strokeWeight: 2,
+      strokeWeight: 4,
       // 折线样式还支持 'dashed'
       strokeStyle: "solid",
       // strokeStyle是dashed时有效
@@ -89,6 +90,7 @@ function App() {
       lineJoin: "round",
       lineCap: "round",
       zIndex: 50,
+      showDir: true,
     });
 
     polyline.setMap(map.current);
