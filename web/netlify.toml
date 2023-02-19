@@ -3,3 +3,7 @@ autoLaunch = false
 [[edge_functions]]
 path = "/api/hello"
 function = "hello"
+
+[[edge_functions]]
+path = "/api/proxylark/*"
+function = "proxylark"
