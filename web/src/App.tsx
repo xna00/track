@@ -66,7 +66,7 @@ function App() {
       const p = res.data.valueRange.values
         .slice(1)
         .slice(-30)
-        .map((v) => [v[1], v[0]]);
+        .map((v: number[]) => [v[1], v[0]]);
       setPath(p);
     });
   }
