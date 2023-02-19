@@ -94,7 +94,7 @@ function App() {
     });
 
     polyline.setMap(map.current);
-    map.current.setCenter(path[0]);
+    map.current.setFitView([polyline]);
   }, [path]);
 
   useEffect(() => {
