@@ -126,7 +126,7 @@ public class LocationService extends Service {
                 lastLocation = location;
             }
         };
-        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 1, listener);
+        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3 * 60 * 1000, 50, listener);
 //        manager.removeUpdates(listener);
     }
 

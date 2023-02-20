@@ -24,7 +24,10 @@ const CACHE_AMP = "CACHE_AMP";
   };
   self.addEventListener("fetch", async (event) => {
     const { request } = event;
-    if (/vdata.+\.amap\.com/.test(request.url)) {
+    if (
+      /vdata.*\.amap\.com/.test(request.url) ||
+      request.url.includes("webapi.amap.com/maps")
+    ) {
       event.respondWith(fetchAndCache(request));
     }
   });
