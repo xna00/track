@@ -6,6 +6,7 @@ specifiers:
   '@types/react': ^18.0.27
   '@types/react-dom': ^18.0.10
   '@vitejs/plugin-react': ^3.1.0
+  jsstore: ^4.5.1
   react: ^18.2.0
   react-dom: ^18.2.0
   typescript: ^4.9.3
@@ -14,6 +15,7 @@ specifiers:
 
 dependencies:
   '@amap/amap-jsapi-loader': 1.0.1
+  jsstore: 4.5.1
   react: 18.2.0
   react-dom: 18.2.0_react@18.2.0
 
@@ -1135,6 +1137,10 @@ packages:
     engines: {node: '>=6'}
     hasBin: true
     dev: true
+
+  /jsstore/4.5.1:
+    resolution: {integrity: sha512-XQhplCSX0vvVos3KgAO+L7/fYAsjXqp9hAXJ/DOyUT+lUOipKnQk1CKxLexcChe2TVAXn3tD/jC5NJe684iGfQ==}
+    dev: false
 
   /kolorist/1.7.0:
     resolution: {integrity: sha512-ymToLHqL02udwVdbkowNpzjFd6UzozMtshPQKVi5k1EjKRqKqBrOnE9QbLEb0/pV76SAiIT13hdL8R6suc+f3g==}

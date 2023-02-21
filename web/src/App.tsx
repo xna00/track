@@ -1,8 +1,8 @@
 import AMapLoader from "@amap/amap-jsapi-loader";
 import { useEffect, useRef, useState } from "react";
 import "./App.css";
-import { fetchJSON } from "./main";
 import { assert } from "./util/assert";
+import { connection, TABLE_NAME } from "./util/db";
 import mapTools, { LngLatObj } from "./util/mapTools";
 
 type TAMap = typeof AMap;
@@ -55,27 +55,24 @@ function App() {
   }, []);
 
   function getPath() {
-    fetchJSON(
-      "/api/proxylark/https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/shtcnSrIMt5ZL0YEoLP7ea27zqf/values/db8dfc"
-    ).then((res) => {
-      console.log(res.data.valueRange.values);
-      const p: LngLatObj[] = res.data.valueRange.values
-        .slice(1)
-        .slice(-30)
-        .map(
-          (v: number[]) =>
-            ({
-              lat: v[0],
-              lng: v[1],
-            } as LngLatObj)
+    connection
+      .select({
+        from: TABLE_NAME,
+        limit: 30,
+        order: {
+          by: "createdAt",
+          type: "desc",
+        },
+      })
+      .then((res) => {
+        console.log(res);
+        setPath(
+          res
+            .map((p: any) => ({ lng: p.longitude, lat: p.latitude }))
+            .map((point) => mapTools.transformWGS2GCJ(point))
+            .map((point) => [point.lng, point.lat])
         );
-
-      setPath(
-        p
-          .map((point) => mapTools.transformWGS2GCJ(point))
-          .map((point) => [point.lng, point.lat])
-      );
-    });
+      });
   }
 
   useEffect(() => {
@@ -101,7 +98,7 @@ function App() {
 
     polyline.setMap(map.current);
     map.current.setFitView([polyline]);
-  }, [path]);
+  }, [path, map.current]);
 
   useEffect(() => {
     getPath();
