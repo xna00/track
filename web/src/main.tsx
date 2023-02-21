@@ -20,7 +20,7 @@ window.pushLocations = async function (locations) {
   });
   const registration = await navigator.serviceWorker.ready;
   try {
-    await (registration as any).sync.register("sync-locations");
+    await registration.sync.register("sync-locations");
   } catch {
     console.log("Background Sync could not be registered!");
   }

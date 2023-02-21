@@ -2,7 +2,7 @@
 /// <reference no-default-lib="false"/>
 /// <reference lib="ES2015" />
 /// <reference lib="webworker" />
-//
+/// <reference types="./types" />
 
 importScripts("https://cdn.jsdelivr.net/npm/jsstore@4.5.1/dist/jsstore.min.js");
 importScripts(
