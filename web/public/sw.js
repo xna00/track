@@ -27,7 +27,9 @@ const TABLE_NAME = "location";
       return res;
     } else {
       const res = await fetch(request);
-      await cache.put(request, res.clone());
+      if (res.ok) {
+        await cache.put(request, res.clone());
+      }
       return res;
     }
   };
