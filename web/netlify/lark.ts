@@ -4,7 +4,6 @@ const token = {
 }
 
 export const fetchLark = async (input: RequestInfo | URL, init?: RequestInit) => {
-    console.log(input)
     if (input !== 'https://open.feishu.cn/open-apis/auth/v3/tenant_access_token/internal') {
         await getToken()
     }
@@ -17,12 +16,10 @@ export const fetchLark = async (input: RequestInfo | URL, init?: RequestInit) =>
             ...init?.headers,
         },
     })
-    console.log(res)
     return res
 }
 
 async function getToken() {
-    console.log(token)
     if (token.value && token.expireAt > new Date().getTime()) {
         return token.value
     }
