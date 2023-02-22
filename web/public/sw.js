@@ -87,27 +87,31 @@ const TABLE_NAME = "location";
         synced: 0,
       },
     });
-    await fetch(
-      "/api/proxylark/https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/shtcnSrIMt5ZL0YEoLP7ea27zqf/values_append?insertDataOption=INSERT_ROWS",
-      {
-        method: "post",
-        body: JSON.stringify({
-          valueRange: {
-            range: "db8dfc",
-            values: ls.map((l) => cols.map((col) => l[col])),
-          },
-        }),
-      }
-    );
-    await connection.update({
-      in: TABLE_NAME,
-      set: {
-        synced: 1,
-      },
-      where: {
-        synced: 0,
-      },
-    });
+    const res = await (
+      await fetch(
+        "/api/proxylark/https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/shtcnSrIMt5ZL0YEoLP7ea27zqf/values_append?insertDataOption=INSERT_ROWS",
+        {
+          method: "post",
+          body: JSON.stringify({
+            valueRange: {
+              range: "db8dfc",
+              values: ls.map((l) => cols.map((col) => l[col])),
+            },
+          }),
+        }
+      )
+    ).json();
+    if (res.code === 0) {
+      await connection.update({
+        in: TABLE_NAME,
+        set: {
+          synced: 1,
+        },
+        where: {
+          synced: 0,
+        },
+      });
+    }
   };
   self.addEventListener("sync", (event) => {
     console.log(event);
