@@ -21,25 +21,38 @@ const TABLE_NAME = "location";
   const self = /** @type {ServiceWorkerGlobalScope & { JsStore: import('jsstore') }} */ (/** @type {unknown} */ (globalThis.self));
 
   const fetchAndCache = async (/** @type {Request} */ request) => {
+    const res = await fetch(request);
+    if (res.ok || res.status === 0) {
+      const cache = await caches.open(CACHE_AMP);
+      await cache.put(request, res.clone());
+    }
+    return res;
+  };
+  const useCacheOrFetch = async (/** @type {Request} */ request) => {
     const cache = await caches.open(CACHE_AMP);
     const res = await cache.match(request);
-    if (res) {
+    const url = new URL(request.url);
+    if (!res) {
+      return fetchAndCache(request);
+    } else if (url.origin === self.origin && url.pathname === "/") {
+      fetchAndCache(request);
       return res;
     } else {
-      const res = await fetch(request);
-      if (res.ok) {
-        await cache.put(request, res.clone());
-      }
       return res;
     }
   };
   self.addEventListener("fetch", async (event) => {
     const { request } = event;
+    const url = new URL(request.url);
+    if (url.pathname === "/v3/log/init") {
+      event.respondWith(new Response());
+      return;
+    }
     if (
-      /vdata.*\.amap\.com/.test(request.url) ||
-      request.url.includes("webapi.amap.com/maps")
+      !(url.origin === self.origin && url.pathname.startsWith("/api/")) &&
+      !url.hostname.includes("localhost")
     ) {
-      event.respondWith(fetchAndCache(request));
+      event.respondWith(useCacheOrFetch(request));
     }
   });
 
