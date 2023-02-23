@@ -18,3 +18,10 @@ interface ServiceWorkerRegistration {
         getTags(): Promise<string[]>
     }
 }
+
+interface Navigator {
+    getBattery: () => Promise<{
+        charging: boolean;
+        level: number
+    } & EventTarget>
+}

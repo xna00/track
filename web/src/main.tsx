@@ -26,6 +26,54 @@ window.pushLocations = async function (locations) {
   }
 };
 
+navigator.getBattery().then((battery) => {
+  battery.addEventListener("chargingchange", async () => {
+    if (!battery.charging) {
+      return;
+    }
+    const cols = [
+      "latitude",
+      "longitude",
+      "altitude",
+      "speed",
+      "accuracy",
+      "verticalAccuracy",
+      "speedAccuracy",
+      "time",
+    ];
+    const ls = await connection.select({
+      from: TABLE_NAME,
+      where: {
+        synced: 0,
+      },
+    });
+    const res = await (
+      await fetch(
+        "/api/proxylark/https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/shtcnSrIMt5ZL0YEoLP7ea27zqf/values_append?insertDataOption=INSERT_ROWS",
+        {
+          method: "post",
+          body: JSON.stringify({
+            valueRange: {
+              range: "db8dfc",
+              values: ls.map((l: any) => cols.map((col) => l[col])),
+            },
+          }),
+        }
+      )
+    ).json();
+    if (res.code === 0) {
+      await connection.update({
+        in: TABLE_NAME,
+        set: {
+          synced: 1,
+        },
+        where: {
+          synced: 0,
+        },
+      });
+    }
+  });
+});
 // fetchJSON(
 //   "/api/proxylark/https://open.feishu.cn/open-apis/sheets/v2/spreadsheets/shtcnSrIMt5ZL0YEoLP7ea27zqf/values/db8dfc"
 // );
