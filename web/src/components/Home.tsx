@@ -71,7 +71,7 @@ export default () => {
                 new Date(a.createdAt).getTime() -
                 new Date(b.createdAt).getTime()
             )
-            .map((p: any) => ({ lng: p.longitude, lat: p.latitude }))
+            .map((p) => ({ lng: p.longitude, lat: p.latitude }))
             .map((point) => mapTools.transformWGS2GCJ(point))
             .map((point) => [point.lng, point.lat])
         );
@@ -101,6 +101,16 @@ export default () => {
 
     polyline.setMap(map.current);
     map.current.setFitView([polyline]);
+    path.forEach((p) => {
+      map.current?.add(
+        new AMap.Marker({
+          position: p,
+          content:
+            '<div style="width:6px;height:6px;border-radius:50%;background:red"></div>',
+          offset: new AMap.Pixel(-3, -3),
+        })
+      );
+    });
   }, [path, map.current]);
 
   useEffect(() => {
