@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import AMapLoader from "@amap/amap-jsapi-loader";
 import { assert } from "../util/assert";
-import { connection, TABLE_NAME } from "../util/db";
+import { connection, Position, TABLE_NAME } from "../util/db";
 import mapTools from "../util/mapTools";
 import Setting from "../assets/setting.svg";
 import Refresh from "../assets/refresh.svg";
@@ -61,10 +61,16 @@ export default () => {
           type: "desc",
         },
       })
-      .then((res) => {
+      .then((_res) => {
+        const res = _res as Position[];
         console.log(res);
         setPath(
           res
+            .sort(
+              (a, b) =>
+                new Date(a.createdAt).getTime() -
+                new Date(b.createdAt).getTime()
+            )
             .map((p: any) => ({ lng: p.longitude, lat: p.latitude }))
             .map((point) => mapTools.transformWGS2GCJ(point))
             .map((point) => [point.lng, point.lat])
