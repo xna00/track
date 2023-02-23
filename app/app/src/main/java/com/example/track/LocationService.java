@@ -93,7 +93,7 @@ public class LocationService extends Service {
             @Override
             public void onLocationChanged(@NonNull Location location) {
 
-                if (location.getAccuracy() > 50) {
+                if (location.getAccuracy() > 20) {
                     return;
                 }
 
@@ -114,7 +114,7 @@ public class LocationService extends Service {
                                 "\"verticalAccuracy\": %f,\n" +
                                 "\"speed\": %f,\n" +
                                 "\"speedAccuracy\": %f,\n" +
-                                "\"time\": \"%s\"\n" +
+                                "\"createdAt\": \"%s\"\n" +
                                 "}",
                         location.getLatitude(),
                         location.getLongitude(),
@@ -130,7 +130,7 @@ public class LocationService extends Service {
                 lastLocation = location;
             }
         };
-        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5 * 60 * 1000, 100, listener);
+        manager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 3 * 60 * 1000, 100, listener);
 //        manager.removeUpdates(listener);
     }
 
