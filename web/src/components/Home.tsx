@@ -199,12 +199,12 @@ const Filter = (
                   {
                     defaultValue: getLocalISOString(
                       new Date().setHours(0, 0, 0, 0)
-                    ).split("+")[0],
+                    ).split(".")[0],
                   },
                   {
                     defaultValue: getLocalISOString(
-                      new Date().setHours(23, 59, 59, 0)
-                    ).split("+")[0],
+                      new Date().setHours(23, 59, 0, 0)
+                    ).split(".")[0],
                   },
                 ]}
               />
