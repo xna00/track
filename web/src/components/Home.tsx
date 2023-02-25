@@ -5,16 +5,33 @@ import { connection, Position, TABLE_NAME } from "../util/db";
 import mapTools from "../util/mapTools";
 import Setting from "../assets/setting.svg";
 import Refresh from "../assets/refresh.svg";
+import FilterIcon from "../assets/filter.svg";
 import { Link } from "react-router-dom";
+import Drawer from "./Drawer";
+import { Form, InputRange, useForm } from "./Form";
+import { getLocalISOString } from "../util/date";
 
 type TAMap = typeof AMap;
 
 type LngLat = [lng: number, lat: number];
+
+type FormValue = {
+  limit: number;
+  createdAt: string[];
+};
 export default () => {
   const wrapper = useRef<HTMLDivElement>(null);
   const map = useRef<AMap.Map>();
 
   const [path, setPath] = useState<LngLat[]>([]);
+
+  const [filter, setFilter] = useState<FormValue>({
+    limit: 30,
+    createdAt: [
+      getLocalISOString(new Date().setHours(0, 0, 0, 0)),
+      getLocalISOString(new Date().setHours(23, 59, 59, 0)),
+    ],
+  });
   useEffect(() => {
     AMapLoader.load({
       key: "ac8d7530788b8e29b4ce6ee432386224", // 申请好的Web端开发者Key，首次调用 load 时必填
@@ -55,10 +72,18 @@ export default () => {
     connection
       .select({
         from: TABLE_NAME,
-        limit: 30,
+        limit: filter?.limit || 30,
         order: {
           by: "createdAt",
           type: "desc",
+        },
+        where: filter && {
+          createdAt: {
+            "-": {
+              low: getLocalISOString(filter.createdAt[0]),
+              high: getLocalISOString(filter.createdAt[1]),
+            },
+          },
         },
       })
       .then((_res) => {
@@ -77,6 +102,11 @@ export default () => {
         );
       });
   }
+
+  useEffect(() => {
+    console.log(filter);
+    getPath();
+  }, [filter]);
 
   useEffect(() => {
     if (!path.length || !map.current) return;
@@ -122,8 +152,69 @@ export default () => {
       <Link to="/config">
         <Setting className="absolute z-100 right-2 top-2" />
       </Link>
+      <Filter
+        className="absolute z-100 right-2 top-12"
+        onSubmit={(value) => {
+          setFilter(value);
+        }}
+      />
       <Refresh className="absolute z-100 right-2 bottom-2" onClick={getPath} />
       <div className="w-screen h-screen" ref={wrapper}></div>
     </div>
+  );
+};
+
+const Filter = (
+  props: Omit<JSX.IntrinsicElements["svg"], "onSubmit"> & {
+    onSubmit: (value: FormValue) => void;
+  }
+) => {
+  const { onSubmit, ...rest } = props;
+  const [visible, setVisible] = useState(true);
+  const [Form, FormItem] = useForm<FormValue>();
+  return (
+    <>
+      <FilterIcon onClick={() => setVisible(true)} {...rest} />
+      <Drawer
+        visible={visible}
+        onClose={() => setVisible(false)}
+        placement="right"
+      >
+        <div className="w-60 bg-white h-full">
+          <Form
+            onSubmit={(v) => {
+              onSubmit({
+                ...v,
+                createdAt: v.createdAt.map(getLocalISOString),
+              });
+            }}
+          >
+            <FormItem name="limit" label="limit">
+              <input type="number" defaultValue={30} />
+            </FormItem>
+            <FormItem name="createdAt" label="createdAt">
+              <InputRange
+                type="datetime-local"
+                inputProps={[
+                  {
+                    defaultValue: getLocalISOString(
+                      new Date().setHours(0, 0, 0, 0)
+                    ).split("+")[0],
+                  },
+                  {
+                    defaultValue: getLocalISOString(
+                      new Date().setHours(23, 59, 59, 0)
+                    ).split("+")[0],
+                  },
+                ]}
+              />
+            </FormItem>
+            <div>
+              <input type="submit" />
+            </div>
+          </Form>
+        </div>
+      </Drawer>
+    </>
   );
 };
