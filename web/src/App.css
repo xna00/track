@@ -2,3 +2,11 @@
   padding: 0;
   margin: 0;
 }
+
+.amap-container .amap-logo {
+  display: none !important;
+}
+
+.amap-container .amap-copyright {
+  display: none !important;
+}
