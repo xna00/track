@@ -170,7 +170,7 @@ const Filter = (
   }
 ) => {
   const { onSubmit, ...rest } = props;
-  const [visible, setVisible] = useState(true);
+  const [visible, setVisible] = useState(false);
   const [Form, FormItem] = useForm<FormValue>();
   return (
     <>
