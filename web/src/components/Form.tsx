@@ -1,5 +1,6 @@
 // @ts-nocheck
 import React, { cloneElement, HTMLInputTypeAttribute, ReactNode } from "react";
+import set from "lodash/set";
 
 export const InputRange = ({
   name,
@@ -33,38 +34,16 @@ export const Form = <T,>(
         const target = e.target as HTMLFormElement;
         const type = target.type as HTMLInputTypeAttribute;
         const raw = Object.fromEntries(new FormData(target).entries());
+        const cooked: T = {};
         Object.entries(raw).forEach(([k, _v]) => {
           let v = _v;
           if (type === "number") {
             v = Number(_v);
           }
-          const ks = k.split(".");
-          let tmp = raw;
-          for (let i = 0; i < ks.length; i++) {
-            const key = ks[i];
-            // TODO: JSONPath parser
-            if (/^.+\[\d+\]$/.test(key)) {
-              const [aKey, index] = key.split(/\[|\]/);
-              console.log(aKey, index);
-
-              if (i < ks.length - 1) {
-                (tmp[aKey] ??= [])[index] = {};
-              } else {
-                (tmp[aKey] ??= [])[index] = v;
-              }
-              delete raw[k];
-            } else {
-              if (i < ks.length - 1) {
-                tmp = tmp[key] = { ...tmp[key] };
-                delete raw[k];
-              } else {
-                tmp[key] = v;
-              }
-            }
-          }
+          set(cooked, k, v);
         });
-        console.log(raw);
-        props.onSubmit?.(raw);
+        console.log(raw, cooked);
+        props.onSubmit?.(cooked);
       }}
     ></form>
   );
