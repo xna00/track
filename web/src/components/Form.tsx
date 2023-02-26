@@ -1,6 +1,7 @@
 // @ts-nocheck
 import React, { cloneElement, HTMLInputTypeAttribute, ReactNode } from "react";
 import set from "lodash/set";
+import { OmitFrom } from "../util/types";
 
 export const InputRange = ({
   name,
@@ -22,7 +23,7 @@ export const InputRange = ({
 };
 
 export const Form = <T,>(
-  props: Omit<JSX.IntrinsicElements["form"], "onSubmit"> & {
+  props: OmitFrom<JSX.IntrinsicElements["form"], "onSubmit"> & {
     onSubmit?: (value: T) => void;
   }
 ) => {

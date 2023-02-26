@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import Drawer from "./Drawer";
 import { Form, InputRange, useForm } from "./Form";
 import { getLocalISOString } from "../util/date";
+import type { OmitFrom } from "../util/types";
 
 type TAMap = typeof AMap;
 
@@ -165,7 +166,7 @@ export default () => {
 };
 
 const Filter = (
-  props: Omit<JSX.IntrinsicElements["svg"], "onSubmit"> & {
+  props: OmitFrom<JSX.IntrinsicElements["svg"], "onSubmit"> & {
     onSubmit: (value: FormValue) => void;
   }
 ) => {

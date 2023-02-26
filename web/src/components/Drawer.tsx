@@ -1,4 +1,4 @@
-import { FC, PropsWithChildren } from "react";
+import type { FC, PropsWithChildren } from "react";
 import { createPortal } from "react-dom";
 
 type Placement = "left" | "right" | "top" | "bottom";
