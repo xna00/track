@@ -24,13 +24,21 @@ export default () => {
         <div>
           <button
             onClick={async () => {
-              (await caches.keys()).forEach((k) => caches.delete(k));
               (await indexedDB.databases()).forEach(
                 (db) => db.name && indexedDB.deleteDatabase(db.name)
               );
             }}
           >
-            clear cache
+            reset databases
+          </button>
+        </div>
+        <div>
+          <button
+            onClick={async () => {
+              (await caches.keys()).forEach((k) => caches.delete(k));
+            }}
+          >
+            clear caches
           </button>
         </div>
       </main>
